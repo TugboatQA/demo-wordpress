@@ -45,7 +45,7 @@ services:
     mysql:
         image: tugboatqa/mysql:5
         commands:
-        update:
-            - curl -L "https://www.dropbox.com/s/sabj5vq711bhst2/demo-wordpress-database.sql.gz?dl=0" > /tmp/database.sql.gz
-            - zcat /tmp/database.sql.gz | mysql tugboat
+            update:
+                - curl -L "https://www.dropbox.com/s/sabj5vq711bhst2/demo-wordpress-database.sql.gz?dl=0" > /tmp/database.sql.gz
+                - zcat /tmp/database.sql.gz | mysql tugboat
 
