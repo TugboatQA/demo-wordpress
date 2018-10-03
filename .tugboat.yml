@@ -1,9 +1,0 @@
-services:
-  apache:
-    default: true
-    image: apache-php
-    commands:
-      init: make tugboat-init
-
-  mysql:
-    image: mysql
