@@ -2,6 +2,7 @@ services:
     php:
         default: true
         image: tugboatqa/php:apache
+        depends: mysql
         commands:
             init:
 
