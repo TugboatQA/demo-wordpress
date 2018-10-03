@@ -17,6 +17,9 @@ services:
                 # Configure wordpress to work with tugboat
                 - cp ${TUGBOAT_ROOT}/.tugboat/wp-config.tugboat.php ${TUGBOAT_ROOT}/docroot/wp-config.local.php
 
+                # Link the docroot
+                - ln -snf ${TUGBOAT_ROOT}/docroot ${DOCROOT}
+
             update:
 
                 # Import uploads
@@ -30,12 +33,12 @@ services:
 
             build: |
                 if [ "x${TUGBOAT_BASE_PREVIEW}" != "x" ]; then
-                    # wp --allow-root --path=/var/www/html search-replace "${TUGBOAT_BASE_PREVIEW_URL/https?:\/\//}" "${TUGBOAT_SERVICE_URL/https?:\/\//}" --skip-columns=guid
+                    # wp --allow-root --path="${DOCROOT}" search-replace "${TUGBOAT_BASE_PREVIEW_URL/https?:\/\//}" "${TUGBOAT_SERVICE_URL/https?:\/\//}" --skip-columns=guid
                     echo "Building from a base preview is currently broken" 1>&2
                     echo "See https://github.com/Lullabot/tugboat/issues/2786" 1>&2
                     /bin/false
                 else
-                    wp --allow-root --path=/var/www/html search-replace 'wordpress.local' "${TUGBOAT_PREVIEW}-${TUGBOAT_TOKEN}.${TUGBOAT_DOMAIN}" --skip-columns=guid
+                    wp --allow-root --path="${DOCROOT}" search-replace 'wordpress.local' "${TUGBOAT_PREVIEW}-${TUGBOAT_TOKEN}.${TUGBOAT_DOMAIN}" --skip-columns=guid
                 fi
 
     mysql:
