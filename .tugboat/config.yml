@@ -29,7 +29,7 @@ services:
                 - rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
             build: |
-                if [ "x${TUGBOAT_BASE_PREVIEW" != "x" ]; then
+                if [ "x${TUGBOAT_BASE_PREVIEW}" != "x" ]; then
                     # wp --allow-root --path=/var/www/html search-replace "${TUGBOAT_BASE_PREVIEW_URL/https?:\/\//}" "${TUGBOAT_SERVICE_URL/https?:\/\//}" --skip-columns=guid
                     echo "Building from a base preview is currently broken" 1>&2
                     echo "See https://github.com/Lullabot/tugboat/issues/2786" 1>&2
