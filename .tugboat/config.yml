@@ -16,28 +16,24 @@ services:
                 - mv wp-cli.phar /usr/local/bin/wp
 
                 # Configure wordpress to work with tugboat
-                - cp ${TUGBOAT_ROOT}/.tugboat/wp-config.tugboat.php ${TUGBOAT_ROOT}/docroot/wp-config.local.php
+                - cp "${TUGBOAT_ROOT}/.tugboat/wp-config.tugboat.php" "${TUGBOAT_ROOT}/docroot/wp-config.local.php"
 
                 # Link the docroot
-                - ln -snf ${TUGBOAT_ROOT}/docroot ${DOCROOT}
+                - ln -snf "${TUGBOAT_ROOT}/docroot" "${DOCROOT}"
 
             update:
 
                 # Import uploads
                 - curl -L "https://www.dropbox.com/s/ufn5e3qe3sisdks/demo-wordpress-uploads.tar.gz?dl=0" > /tmp/uploads.tar.gz
                 - tar -C /tmp -zxf /tmp/uploads.tar.gz
-                - rsync -av --delete /tmp/uploads/ ${TUGBOAT_ROOT}/docroot/wp-content/uploads/
+                - rsync -av --delete /tmp/uploads/ "${TUGBOAT_ROOT}/docroot/wp-content/uploads/"
 
                 # Cleanup
                 - apt-get clean
                 - rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-            build: |
-                if [ "x${TUGBOAT_BASE_PREVIEW}" != "x" ]; then
-                    wp --allow-root --path="${DOCROOT}" search-replace "${TUGBOAT_BASE_PREVIEW_URL_HOST}" "${TUGBOAT_SERVICE_URL_HOST}" --skip-columns=guid
-                else
-                    wp --allow-root --path="${DOCROOT}" search-replace 'wordpress.local' "${TUGBOAT_SERVICE_URL_HOST}" --skip-columns=guid
-                fi
+            build:
+                - "${TUGBOAT_ROOT}/.tugboat/wp-search-replace.sh"
 
     mysql:
         image: tugboatqa/mysql:5
@@ -45,4 +41,4 @@ services:
             update:
                 - curl -L "https://www.dropbox.com/s/sabj5vq711bhst2/demo-wordpress-database.sql.gz?dl=0" > /tmp/database.sql.gz
                 - zcat /tmp/database.sql.gz | mysql tugboat
-
+                - rm /tmp/database.sql.gz
