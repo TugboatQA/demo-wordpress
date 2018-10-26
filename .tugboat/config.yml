@@ -10,6 +10,9 @@ services:
                 - apt-get update
                 - apt-get install -y rsync
 
+                # Install PHP mysqli extension
+                - docker-php-ext-install mysqli
+
                 # Install wp-cli
                 - curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
                 - chmod +x wp-cli.phar
