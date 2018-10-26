@@ -15,11 +15,12 @@ services:
                 - chmod +x wp-cli.phar
                 - mv wp-cli.phar /usr/local/bin/wp
 
-                # Configure wordpress to work with tugboat
-                - cp "${TUGBOAT_ROOT}/.tugboat/wp-config.tugboat.php" "${TUGBOAT_ROOT}/docroot/wp-config.local.php"
-
                 # Link the docroot
                 - ln -snf "${TUGBOAT_ROOT}/docroot" "${DOCROOT}"
+
+                # Configure wordpress to work with tugboat
+                #- cp "${TUGBOAT_ROOT}/.tugboat/wp-config.tugboat.php" "${TUGBOAT_ROOT}/docroot/wp-config.local.php"
+                - wp --allow-root --path="${DOCROOT}" config create --dbhost=mysql --dbname=tugboat --dbuser=tugboat --dbpass=tugboat --force
 
             update:
 
@@ -32,8 +33,12 @@ services:
                 - apt-get clean
                 - rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-            build:
-                - "${TUGBOAT_ROOT}/.tugboat/wp-search-replace.sh"
+            build: |
+                if [ "x${TUGBOAT_BASE_PREVIEW}" != "x" ]; then
+                    wp --allow-root --path="${DOCROOT}" search-replace "${TUGBOAT_BASE_PREVIEW_URL_HOST}" "${TUGBOAT_SERVICE_URL_HOST}" --skip-columns=guid --debug
+                else
+                    wp --allow-root --path="${DOCROOT}" search-replace 'wordpress.local' "${TUGBOAT_SERVICE_URL_HOST}" --skip-columns=guid --debug
+                fi
 
     mysql:
         image: tugboatqa/mysql:5
