@@ -22,7 +22,6 @@ services:
                 - ln -snf "${TUGBOAT_ROOT}/docroot" "${DOCROOT}"
 
                 # Configure wordpress to work with tugboat
-                #- cp "${TUGBOAT_ROOT}/.tugboat/wp-config.tugboat.php" "${TUGBOAT_ROOT}/docroot/wp-config.local.php"
                 - wp --allow-root --path="${DOCROOT}" config create --dbhost=mysql --dbname=tugboat --dbuser=tugboat --dbpass=tugboat --force
 
             update:
